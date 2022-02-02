@@ -2,6 +2,7 @@
 class Assets {
   Assets._();
 
+  static const String imagesDrawerBg = 'assets/images/drawer_bg.jpg';
   static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesLogoWhite = 'assets/images/logo_white.png';
   static const String imagesMainLogo = 'assets/images/main_logo.png';
