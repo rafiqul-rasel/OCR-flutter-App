@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:my_ocr/screens/login/loginController.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({Key? key}) : super(key: key);
@@ -12,6 +14,18 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
+  late LoginController controller;
+  @override
+  void initState() {
+    controller=Get.find(tag:"12345");
+    super.initState();
+
+  }
+  @override
+  void dispose() {
+    Get.delete<LoginController>();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,19 +50,19 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: <Widget>[
-            const UserAccountsDrawerHeader(
-              accountName: Text("Abhishek Mishra"),
-              accountEmail: Text("abhishekm977@gmail.com"),
+             UserAccountsDrawerHeader(
+              accountName: Text(controller.googleAccount.value?.displayName??"Abhishek Mishra"),
+              accountEmail: Text(controller.googleAccount.value?.email??"abhishekm977@gmail.com"),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.orange,
                 child: Text(
-                  "A",
+                  controller.googleAccount.value?.displayName![0].toString()??"",
                   style: TextStyle(fontSize: 40.0),
                 ),
                 backgroundImage:
-                NetworkImage("http://tineye.com/images/widgets/mona.jpg"),
+                NetworkImage(controller.googleAccount.value?.photoUrl??"http://tineye.com/images/widgets/mona.jpg"),
               ),
-          decoration:  BoxDecoration(
+          decoration:  const BoxDecoration(
               image:  DecorationImage(
                   fit: BoxFit.cover,
                   image:  AssetImage("assets/images/drawer_bg.jpg")
@@ -76,7 +90,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             ListTile(
               leading: const Icon(Icons.logout), title: const Text("LogOut"),
               onTap: () {
-                Navigator.pop(context);
+                //Navigator.pop(context);
+                if(controller.loginWithEmail){
+                controller.logOutwithEmail();
+                }else{ controller.signOut();}
+
+                Get.toNamed('/login');
               },
             ),
           ],
@@ -90,17 +109,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             Container(
                 width: 148.0,
                 height: 148.0,
-                decoration:  const BoxDecoration(
+                decoration:   BoxDecoration(
                     shape: BoxShape.circle,
                     image:  DecorationImage(
                         fit: BoxFit.fill,
-                        image: NetworkImage("https://via.placeholder.com/400x400")
+                        image: NetworkImage(controller.googleAccount.value?.photoUrl??"https://via.placeholder.com/400x400")
                     )
                 )),
             const SizedBox(height: 10,),
-            const Text("Test Name",style:  TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+             Text(controller.googleAccount.value?.displayName??"Test Name",style:  TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
             const SizedBox(height: 10,),
-            const Text("QIU Email Address",style: TextStyle(color: Colors.black45),),
+             Text(controller.googleAccount.value?.email??"QIU Email Address",style: TextStyle(color: Colors.black45),),
             const SizedBox(height: 10,),
               Expanded(
                 child: SizedBox(

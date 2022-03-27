@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:my_ocr/screens/login/loginController.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -15,11 +15,26 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController=TextEditingController();
   var _passwordVisible = false;
   bool _remember = false;
+  late LoginController controller;
+
+
+  @override
+  void initState() {
+    controller=Get.put(LoginController(),tag:"12345");
+    super.initState();
+
+  }
+  @override
+  void dispose() {
+    Get.delete<LoginController>();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
 
     return  Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child:  Column(
@@ -84,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       contentPadding: EdgeInsets.zero,
                       title: const Text("Remember me"),
                       value: _remember,
-                      onChanged: (Value) {
+                      onChanged: (value) {
                         setState(() {
                           _remember=!_remember;
                         });
@@ -101,8 +116,12 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Colors.redAccent,
               borderRadius: BorderRadius.circular(10),
               child: InkWell(
-                onTap: () {
-                  Get.toNamed('/dashboard');
+                onTap: ()async {
+
+                 // Get.toNamed('/dashboard');
+                  await controller.createToken(_emailController.text, _passwordController.text,context);
+                 // print(result);
+
                 },
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
@@ -123,8 +142,13 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Colors.redAccent,
               borderRadius: BorderRadius.circular(10),
               child: InkWell(
-                onTap: () {
+                onTap: ()async{
                  // Get.toNamed('/login');
+                   controller.signIn();
+                  if(controller.googleAccount.value!=null){
+                    Get.toNamed('/dashboard');
+                  }
+
                 },
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
