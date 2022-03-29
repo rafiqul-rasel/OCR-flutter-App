@@ -1,4 +1,4 @@
-# my_ocr
+# my_ocr with machine leaning
 
 A new Flutter project.
 
